@@ -19,7 +19,7 @@ class RegisterScreen extends React.Component{
         this.setState({
             [attributeName]: value,
         });
-    }
+    };
 
     handleOnSubmit = async (event)=>{
         event.preventDefault();
@@ -55,6 +55,7 @@ class RegisterScreen extends React.Component{
                     headers: {
                         'Content-Type':'application/json'
                     },
+                    credentials: 'include',
                     body: JSON.stringify({
                         email: this.state.email,
                         password: this.state.password,
@@ -95,7 +96,7 @@ class RegisterScreen extends React.Component{
                 });
             }
         }
-    }
+    };
 
     render(){
         return(
