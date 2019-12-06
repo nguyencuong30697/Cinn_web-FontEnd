@@ -45,12 +45,63 @@ class CreatePostScreen extends React.Component {
         }
       };
 
+    handleOnSubmit = async (event) => {
+        event.preventDefault();
+        //validate
+        if(!this.state.content){
+            this.setState({
+                errorMessage: 'Please input Content of Post',
+            });
+        } else if(!this.state.file){
+            this.setState({
+                errorMessage: 'Please upload file',
+            });
+        } else {
+            this.setState({
+                errorMessage: '',
+            });
+            try{
+                //fetch API
+                //Gui image len truoc sau do nhan duoc duong link anh, roi moi gui lai len server de luu
+                //form data 
+                const fromData = new FormData();
+                fromData.append('image',this.state.file);
+                //upload image
+                const uploadResult = await fetch(`http://localhost:3001/uploads/photos`,{
+                    method: 'POST',
+                    body: fromData,
+                    credentials:'include',
+                }).then((res)=>{return res.json();});
+
+                //create new post
+                await fetch(`http://localhost:3001/posts//create-post`,{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: this.state.content,
+                        imgUrl: uploadResult.data,
+                    }),
+                    credentials:'include',
+                }).then((res)=>{return res.json();});
+                
+                //back to homepage
+                window.location.href = '/';
+            }catch(err){
+                this.setState({
+                    errorMessage: err.message,
+                });
+            }
+        }
+    };
+
     render() {
         return (
             <div className='row'>
                 <div className='col-2'></div>
                 <div className='col-8'>
-                    <form className='mt-5'>
+                    <form className='mt-5' onSubmit={this.handleOnSubmit}>
                         <div className="form-group row">
                             <label for="content" className="col-sm-2 col-form-label">Content (<span className="text-danger">*</span>)</label>
                             <div className="col-sm-10">

@@ -64,16 +64,15 @@ class App extends React.Component {
                   <li className="nav-item">
                     <a className="nav-link" href="/register">Register</a>
                   </li>
-                  <li className="nav-item">
-                    <a className="nav-link" href="/register">Register</a>
-                  </li>
                 </ul>
                )}
             
             <form className="form-inline my-2 my-lg-0">
               <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
               <button className="btn btn-outline-success my-2 my-sm-0 mr-1" type="submit">Search</button><br></br>
-              <a href='/create-post'className="btn btn-outline-primary my-2 my-sm-0">Create NewPost</a>
+              {this.state.currentUser ? (
+                <a href='/create-post'className="btn btn-outline-primary my-2 my-sm-0">Create NewPost</a>
+              ) : null}
             </form>
             
           </div>
