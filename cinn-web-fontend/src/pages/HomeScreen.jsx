@@ -7,6 +7,8 @@ class HomeScreen extends React.Component{
         data: [],
         total: 0,
         currentPageNumber: 1,
+        detailModelVisible: false,
+        selectedPost: undefined,
     }
 
     componentWillMount(){
@@ -67,13 +69,27 @@ class HomeScreen extends React.Component{
         }
     }
 
+    handlePostClick = (selectedPost) => {
+        this.setState({
+            detailModelVisible: true,
+          selectedPost: selectedPost,
+        });
+      };
+
+    closeDetailModal = () => {
+        this.setState({
+            detailModelVisible: false,
+          selectedPost: undefined,
+        });
+      };
+
     render(){
         const maxPageNumber = Math.ceil(this.state.total / pageSize);
 		const paginations = [];
 		for (let i = 0; i < maxPageNumber; i += 1) {
 			paginations.push(i + 1);
-		}
-
+        }
+        
 
         return(
             <div>
@@ -105,7 +121,7 @@ class HomeScreen extends React.Component{
                                         >
                                             {item.content}
                                         </p>
-                                        <a href="#" className="btn btn-primary">
+                                        <a href="#" onClick={() => this.handlePostClick(item)} className="btn btn-primary" >
                                             More Information
                                         </a>
                                     </div>
@@ -148,6 +164,48 @@ class HomeScreen extends React.Component{
                 </li>
                 </ul>
                 </nav>
+                {this.state.detailModelVisible ? (
+                        <div
+                            className="modal fade show"
+                            role="dialog"
+                            tabindex="-1"
+                            style={{ display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)', }}
+                            onClick={this.closeDetailModal}
+                        >
+                            <div className="modal-dialog" role="document">
+                            <div className="modal-content" onClick={(event) => {
+                                event.stopPropagation(); 
+                                // khi thang con co su kien thi no se truyen cho thang cha
+                                // cai nay de huy bo viec gui su kien  
+                            }}>
+                                <div className="modal-body">
+                                    <div
+                                        className="card-img-top"
+                                        style={{
+                                        backgroundImage: `url(http://localhost:3001${this.state.selectedPost.imgUrl})`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        backgroundRepeat: 'no-repeate',
+                                        height: '350px',
+                                        width: 'auto'
+                                        }}
+                                    ></div>
+                                    <div className="card-body">
+                                        <h5 className="card-title">{this.state.selectedPost.author.fullName}</h5>
+                                        <p className="card-text">
+                                        {this.state.selectedPost.content}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" onClick={this.closeDetailModal}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        ) : null}
             </div>
         );
     };
